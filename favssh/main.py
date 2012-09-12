@@ -1,10 +1,23 @@
 # -*- coding: utf-8 -*-
 from favssh.config import Configuration
 import os
+import re
 
 def command_list(args):
     for host in args.config.all_hosts():
         print host
+
+def command_show(args):
+    for a in args.hosts:
+        for host in args.config.all_hosts():
+            if a.lower() == host.name:
+                print host
+
+def command_grep(args):
+    pattern = re.compile(args.pattern, re.I)
+    for host in args.config.all_hosts():
+        if pattern.search(str(host)):
+            print host
 
 def command_add(args):
     args.config.add_host(args.host, hostname=args.hostname, user=args.user, port=args.port)
@@ -28,6 +41,14 @@ def main():
     parser_list = subparsers.add_parser('list')
     parser_list.set_defaults(func=command_list)
     
+    parser_show = subparsers.add_parser('show')
+    parser_show.add_argument('hosts', metavar='HOST', nargs='+')
+    parser_show.set_defaults(func=command_show)
+
+    parser_grep = subparsers.add_parser('grep')
+    parser_grep.add_argument('pattern')
+    parser_grep.set_defaults(func=command_grep)
+
     parser_add = subparsers.add_parser('add')
     parser_add.add_argument('host')
     parser_add.add_argument('hostname')
