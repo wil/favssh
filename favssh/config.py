@@ -76,6 +76,9 @@ class Configuration(object):
     def all_hosts(self):
         return sorted(self.hosts.values(), key=lambda obj: getattr(obj, 'name'))
     
+    def get_host(self, host):
+        return self.hosts.get(host)
+    
     def add_host(self, host, **config):
         if host in self.hosts:
             raise Exception("Host %r is already in config, use favssh update")

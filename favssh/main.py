@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from favssh.config import Configuration
+import sys
 import os
 import re
 
@@ -8,10 +9,13 @@ def command_list(args):
         print host
 
 def command_show(args):
-    for a in args.hosts:
-        for host in args.config.all_hosts():
-            if a.lower() == host.name:
-                print host
+    for h in args.hosts:
+        host = args.config.get_host(h)
+        if host:
+            print host
+        else:
+            print >> sys.stderr, "host '%s' not found" % h
+
 
 def command_grep(args):
     pattern = re.compile(args.pattern, re.I)
